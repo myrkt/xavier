@@ -39,3 +39,7 @@ jobs:
         name: Run test
         run: |
           bun test
+      - id: build
+        name: Run build
+        run: |
+          bun run build

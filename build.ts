@@ -2,7 +2,7 @@ import type { BuildConfig } from "bun";
 import dts from "bun-plugin-dts";
 
 const defaultBuildConfig: BuildConfig = {
-  entrypoints: ["./src/index.ts"],
+  entrypoints: ["./src/index.tsx"],
   outdir: "./dist",
 };
 
