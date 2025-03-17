@@ -36,7 +36,8 @@
     "@testing-library/react": "^16.2.0",
     "@types/bun": "^1.1.10",
     "@types/react": "^19.0.10",
-    "bun-plugin-dts": "^0.3.0"
+    "bun-plugin-dts": "^0.3.0",
+    "prettier": "^3.5.3"
   },
   "dependencies": {
     "react": "^19.0.0",
