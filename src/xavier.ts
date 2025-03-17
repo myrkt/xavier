@@ -9,7 +9,7 @@ export class XavierApplication {
   constructor(
     public readonly applicationId: string,
     public readonly apiToken: string,
-    public readonly baseUrl: string = "https://assignment.fly.dev/",
+    public readonly baseUrl: string = "https://assignment.fly.dev",
   ) {}
 
   public async getAllExperiments(): Promise<ExperimentAssignments> {
@@ -37,9 +37,11 @@ export class XavierApplication {
       if (experiment) {
         return experiment.treatment;
       }
-    } finally {
+    } catch (e) {
       // catch all exceptions and return the default value
       return defaultValue;
     }
+
+    return defaultValue;
   }
 }
