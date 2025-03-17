@@ -91,10 +91,7 @@ test("If Xavier is configured, and the experiment in question is in the map, the
 
   render(
     <Xavier apiToken="" applicationId="">
-      <MyComponent
-        experimentId="test"
-        defaultMessage={message}
-      />
+      <MyComponent experimentId="test" defaultMessage={message} />
     </Xavier>,
   );
 
