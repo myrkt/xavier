@@ -9,7 +9,7 @@ const DEFAULT_TIMEOUT_MS = 100;
 
 test("If Xavier is not configured, an error is thrown when useExperiment() is called", () => {
   expect(() => render(<MyComponent defaultMessage="" />)).toThrowError(
-    "API token is not configured. Please call Xavier.configure() with a valid token.",
+    "Xavier is not configured. Please add <Xavier apiToken='...'> with a valid token to your component tree.",
   );
 });
 

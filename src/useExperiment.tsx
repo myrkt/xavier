@@ -10,7 +10,7 @@ export function useExperiment<T = boolean>(
 
   if (!context) {
     throw new Error(
-      "API token is not configured. Please call Xavier.configure() with a valid token.",
+      "Xavier is not configured. Please add <Xavier apiToken='...'> with a valid token to your component tree.",
     );
   }
 
