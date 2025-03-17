@@ -3,6 +3,7 @@ import { test, expect, mock } from "bun:test";
 import { screen, render } from "@testing-library/react";
 import { MyComponent } from "./MyComponent";
 import Xavier from "../src/index";
+import { ExperimentAssignments, XavierApplication } from "../src/xavier";
 
 const DEFAULT_TIMEOUT_MS = 100;
 
@@ -13,20 +14,25 @@ test("If Xavier is not configured, an error is thrown when useExperiment() is ca
 });
 
 test("If Xavier is configured, but the experiment fails to be evaluated, the default value is used instead", () => {
-  mock.module("../src/index", () => {
+  class MockXavier extends XavierApplication {
+    override async getAllExperiments(): Promise<ExperimentAssignments> {
+      throw new Error("Failed to evaluate experiment");
+    }
+  }
+
+  mock.module("../src/xavier", () => {
     return {
-      Xavier,
-      getAllExperiments: async () => {
-        throw new Error("Failed to evaluate experiment");
-      },
+      Xavier: MockXavier,
     };
   });
 
-  Xavier.configure("valid-app-id", "valid-api-token");
-
   const message = "Just a test!";
 
-  render(<MyComponent defaultMessage={message} />);
+  render(
+    <Xavier apiToken="" applicationId="">
+      <MyComponent defaultMessage={message} />
+    </Xavier>,
+  );
 
   // Check if the loading value is used
   const loadingElement = screen.getByText("Loading");
@@ -47,15 +53,15 @@ test("If Xavier is configured, but the experiment in question is not found, the 
     };
   });
 
-  Xavier.configure("valid-app-id", "valid-api-token");
-
   const message = "Just a test!";
 
   render(
-    <MyComponent
-      experimentId="not-a-real-experiment"
-      defaultMessage={message}
-    />,
+    <Xavier apiToken="" applicationId="">
+      <MyComponent
+        experimentId="not-a-real-experiment"
+        defaultMessage={message}
+      />
+    </Xavier>,
   );
 
   // Check if the loading value is used
@@ -81,11 +87,16 @@ test("If Xavier is configured, and the experiment in question is in the map, the
     };
   });
 
-  Xavier.configure("valid-app-id", "valid-api-token");
-
   const message = "Just a test!";
 
-  render(<MyComponent defaultMessage={message} />);
+  render(
+    <Xavier apiToken="" applicationId="">
+      <MyComponent
+        experimentId="test"
+        defaultMessage={message}
+      />
+    </Xavier>,
+  );
 
   // Check if the loading value is used
   const loadingElement = screen.getByText("Loading");
