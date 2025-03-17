@@ -7,6 +7,7 @@ export const XavierContext = createContext<XavierApplication | null>(null);
 interface XavierProviderProps {
   applicationId: string;
   apiToken: string;
+  baseUrl?: string;
   children: ReactNode;
 }
 
@@ -29,9 +30,10 @@ function localStorageProvider(key: string): Map<string, any> {
 export const XavierProvider: React.FC<XavierProviderProps> = ({
   applicationId,
   apiToken,
+  baseUrl,
   children,
 }) => {
-  const instance = new XavierApplication(applicationId, apiToken);
+  const instance = new XavierApplication(applicationId, apiToken, baseUrl);
   const localStorageKey = `xavier-${applicationId}`;
 
   return (
