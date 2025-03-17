@@ -31,26 +31,20 @@ export default class Xavier {
 async function getAllExperiments(): Promise<
   Map<string, ExperimentAssignment<any>>
 > {
+  if (!Xavier.configured()) {
+    throw new Error(
+      "API token is not configured. Please call Xavier.configure() with a valid token.",
+    );
+  }
+
   const apiToken = Xavier.getApiToken();
   const applicationId = Xavier.getApplicationId();
-
-  if (!apiToken) {
-    throw new Error(
-      "API token is not configured. Please call Xavier.configure() with a valid token.",
-    );
-  }
-
-  if (!applicationId) {
-    throw new Error(
-      "API token is not configured. Please call Xavier.configure() with a valid token.",
-    );
-  }
 
   const url = `${Xavier.baseUrl}/assignments`;
 
   const response = await fetch(url, {
     headers: {
-      "X-Application-Id": applicationId,
+      "X-Application-Id": applicationId || "",
       Authorization: `Bearer ${apiToken}`,
     },
   });
