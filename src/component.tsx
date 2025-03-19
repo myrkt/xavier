@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode } from "react";
+import React, { createContext, ReactNode, useContext } from "react";
 import { XavierApplication } from "./xavier";
 import { SWRConfig } from "swr";
 
@@ -45,4 +45,13 @@ export const XavierProvider: React.FC<XavierProviderProps> = ({
       </SWRConfig>
     </XavierContext.Provider>
   );
+};
+
+
+export const useXavier = () => {
+  const context = useContext(XavierContext);
+  if (!context) {
+      throw new Error("Xavier is not configured. Please add <Xavier apiToken='...'> with a valid token to your component tree.");
+  }
+  return context;
 };
