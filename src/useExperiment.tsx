@@ -5,7 +5,7 @@ export function useExperiment<T = boolean>(
   experimentId: string,
   defaultValue: T,
 ): SWRResponse<T> {
-  const xavier = useXavier()
+  const xavier = useXavier();
 
   return useSWR(`assignments-${experimentId}`, () =>
     xavier.getOneExperiment<T>(experimentId, defaultValue),

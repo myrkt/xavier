@@ -47,11 +47,12 @@ export const XavierProvider: React.FC<XavierProviderProps> = ({
   );
 };
 
-
 export const useXavier = () => {
   const context = useContext(XavierContext);
   if (!context) {
-      throw new Error("Xavier is not configured. Please add <Xavier apiToken='...'> with a valid token to your component tree.");
+    throw new Error(
+      "Xavier is not configured. Please add <Xavier apiToken='...'> with a valid token to your component tree.",
+    );
   }
   return context;
 };
