@@ -1069,7 +1069,6 @@ var XavierProvider = ({
   baseUrl,
   children
 }) => {
-  console.log("Initializing XavierProvider with:", { applicationId, apiToken, baseUrl });
   const instance = new XavierApplication(applicationId, apiToken, baseUrl);
   const localStorageKey = `xavier-${applicationId}`;
   return /* @__PURE__ */ jsxDEV(XavierContext.Provider, {
