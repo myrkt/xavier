@@ -1,13 +1,16 @@
-import { useXavier } from "./component";
-import useSWR, { SWRResponse } from "swr";
+import { XavierResponse } from "./responseType";
+import { useExperiments } from "./useExperiments";
 
 export function useExperiment<T = boolean>(
   experimentId: string,
   defaultValue: T,
-): SWRResponse<T> {
-  const xavier = useXavier();
+): XavierResponse<T> {
+  const allExperiments = useExperiments();
 
-  return useSWR(`assignments-${experimentId}`, () =>
-    xavier.getOneExperiment<T>(experimentId, defaultValue),
-  );
+  const result: XavierResponse<T> = {
+    ...allExperiments,
+    data: allExperiments.data?.get(experimentId)?.data ?? defaultValue
+  };
+
+  return result;
 }

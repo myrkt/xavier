@@ -88,23 +88,49 @@ var require_shim = __commonJS((exports, module) => {
 import { createContext as createContext2, useContext as useContext3 } from "react";
 
 // src/xavier.ts
+var timeout = (ms, promise) => {
+  const controller = new AbortController;
+  const signal = controller.signal;
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, ms);
+  return promise.finally(() => clearTimeout(timeoutId));
+};
+var fetchDataWithTimeout = async (url, configs, ms) => {
+  try {
+    const response = await timeout(ms, fetch(url, configs));
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("Request timed out");
+    }
+    throw error;
+  }
+};
+
 class XavierApplication {
   applicationId;
   apiToken;
   baseUrl;
-  constructor(applicationId, apiToken, baseUrl = "https://assignment.fly.dev") {
+  timeoutMs;
+  constructor(applicationId, apiToken, baseUrl = "https://assignment.fly.dev", timeoutMs = 500) {
     this.applicationId = applicationId;
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
+    this.timeoutMs = timeoutMs;
   }
   async getAllExperiments() {
     const url = `${this.baseUrl}/assignments`;
-    const response = await fetch(url, {
+    const response = await fetchDataWithTimeout(url, {
       headers: {
         "X-Application-Id": this.applicationId,
         Authorization: `Bearer ${this.apiToken}`
       }
-    });
+    }, this.timeoutMs);
     const responseJson = await response.json();
     return new Map(Object.entries(responseJson));
   }
@@ -113,12 +139,16 @@ class XavierApplication {
       const allExperiments = await this.getAllExperiments();
       const experiment = allExperiments.get(experimentId);
       if (experiment) {
-        return experiment.treatment;
+        return experiment.data;
       }
     } catch (e) {
       return defaultValue;
     }
     return defaultValue;
+  }
+  async getAllExperimentsSummaries() {
+    const experiments = await this.getAllExperiments();
+    return new Map(experiments.entries().map(([_, v]) => [v.experimentId, v.treatmentId]));
   }
 }
 
@@ -517,11 +547,11 @@ var initCache = (provider, options) => {
 var onErrorRetry = (_, __, config, revalidate, opts) => {
   const maxRetryCount = config.errorRetryCount;
   const currentRetryCount = opts.retryCount;
-  const timeout = ~~((Math.random() + 0.5) * (1 << (currentRetryCount < 8 ? currentRetryCount : 8))) * config.errorRetryInterval;
+  const timeout2 = ~~((Math.random() + 0.5) * (1 << (currentRetryCount < 8 ? currentRetryCount : 8))) * config.errorRetryInterval;
   if (!isUndefined(maxRetryCount) && currentRetryCount > maxRetryCount) {
     return;
   }
-  setTimeout(revalidate, timeout, opts);
+  setTimeout(revalidate, timeout2, opts);
 };
 var compare = dequal;
 var [cache, mutate] = initCache(new Map);
@@ -1087,15 +1117,36 @@ var useXavier = () => {
   return context;
 };
 
+// src/useExperiments.tsx
+function useExperiments() {
+  const xavier = useXavier();
+  return useSWR(`assignments-${xavier.applicationId}`, xavier.getAllExperiments);
+}
+
 // src/useExperiment.tsx
 function useExperiment(experimentId, defaultValue) {
-  const xavier = useXavier();
-  return useSWR(`assignments-${experimentId}`, () => xavier.getOneExperiment(experimentId, defaultValue));
+  const allExperiments = useExperiments();
+  const result = {
+    ...allExperiments,
+    data: allExperiments.data?.get(experimentId)?.data ?? defaultValue
+  };
+  return result;
+}
+// src/useExperimentSummaries.tsx
+function useExperimentSummaries() {
+  const allExperiments = useExperiments();
+  const result = {
+    ...allExperiments,
+    data: new Map(allExperiments.data?.entries().map(([_, v]) => [v.experimentId, v.treatmentId]))
+  };
+  return result;
 }
 
 // src/index.tsx
 var src_default = XavierProvider;
 export {
+  useXavier,
+  useExperimentSummaries,
   useExperiment,
   src_default as default
 };
