@@ -1,3 +1,4 @@
+"use client";
 var __create = Object.create;
 var __getProtoOf = Object.getPrototypeOf;
 var __defProp = Object.defineProperty;
@@ -205,7 +206,6 @@ function dequal(foo, bar) {
 }
 
 // node_modules/swr/dist/_internal/config-context-client-v7VOFo66.mjs
-"use client";
 var SWRGlobalState = new WeakMap;
 var noop = () => {};
 var UNDEFINED = noop();
