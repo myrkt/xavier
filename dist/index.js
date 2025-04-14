@@ -1086,20 +1086,6 @@ var useSWR = withArgs(useSWRHandler);
 
 // src/component.tsx
 var XavierContext = createContext2(null);
-function localStorageProvider(key) {
-  if (typeof window === "undefined") {
-    console.warn("localStorageProvider is not supported in SSR. Please use a different provider.");
-    return new Map;
-  }
-  const storedData = localStorage.getItem(key);
-  const map = new Map(storedData ? JSON.parse(storedData).map(([k, v]) => [k, v]) : []);
-  window.addEventListener("beforeunload", () => {
-    const appCache = JSON.stringify(Array.from(map.entries()));
-    localStorage.setItem(key, appCache);
-  });
-  console.log("LocalStorageProvider initialized with key:", key, map);
-  return map;
-}
 var XavierProvider = ({
   applicationId,
   apiToken,
@@ -1110,9 +1096,7 @@ var XavierProvider = ({
   const localStorageKey = `xavier-${applicationId}`;
   return /* @__PURE__ */ React5.createElement(XavierContext.Provider, {
     value: instance
-  }, /* @__PURE__ */ React5.createElement(SWRConfig2, {
-    value: { provider: () => localStorageProvider(localStorageKey) }
-  }, children));
+  }, /* @__PURE__ */ React5.createElement(SWRConfig2, null, children));
 };
 var useXavier = () => {
   const context = useContext3(XavierContext);

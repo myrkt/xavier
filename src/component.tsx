@@ -46,9 +46,7 @@ export const XavierProvider: React.FC<XavierProviderProps> = ({
 
   return (
     <XavierContext.Provider value={instance}>
-      <SWRConfig
-        value={{ provider: () => localStorageProvider(localStorageKey) }}
-      >
+      <SWRConfig>
         {children}
       </SWRConfig>
     </XavierContext.Provider>
