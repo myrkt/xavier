@@ -1097,6 +1097,7 @@ function localStorageProvider(key) {
     const appCache = JSON.stringify(Array.from(map.entries()));
     localStorage.setItem(key, appCache);
   });
+  console.log("LocalStorageProvider initialized with key:", key, map);
   return map;
 }
 var XavierProvider = ({
@@ -1132,6 +1133,8 @@ function useExperiments() {
 // src/useExperiment.tsx
 function useExperiment(experimentId, defaultValue) {
   const allExperiments = useExperiments();
+  console.log("useExperiment allExperiments:", allExperiments);
+  if (allExperiments.data) {}
   const result = {
     ...allExperiments,
     data: allExperiments.data?.get(experimentId)?.data ?? defaultValue

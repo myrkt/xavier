@@ -7,6 +7,12 @@ export function useExperiment<T = boolean>(
 ): XavierResponse<T> {
   const allExperiments = useExperiments();
 
+  console.log("useExperiment allExperiments:", allExperiments);
+
+  if (allExperiments.data) {
+
+  }
+
   const result: XavierResponse<T> = {
     ...allExperiments,
     data: allExperiments.data?.get(experimentId)?.data ?? defaultValue
