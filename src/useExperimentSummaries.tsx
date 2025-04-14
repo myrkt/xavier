@@ -7,7 +7,7 @@ export function useExperimentSummaries(
 
   const result: XavierResponse<Map<string, string>> = {
     ...allExperiments,
-    data: new Map(allExperiments.data?.entries().map(([_, v]) => [v.experimentId, v.treatmentId]))
+    data: new Map((allExperiments.data ?? new Map())?.entries().map(([_, v]) => [v.experimentId, v.treatmentId]))
   };
 
   return result
