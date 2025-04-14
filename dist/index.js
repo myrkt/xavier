@@ -127,14 +127,15 @@ class XavierApplication {
   async getAllExperiments() {
     console.log("Fetching all Xavier experiments");
     const url = `${this.baseUrl}/assignments`;
-    const response = await fetchDataWithTimeout(url, {
+    const responseJson = await fetchDataWithTimeout(url, {
       headers: {
         "X-Application-Id": this.applicationId,
         Authorization: `Bearer ${this.apiToken}`
       }
     }, this.timeoutMs);
-    const responseJson = await response.json();
-    return new Map(Object.entries(responseJson));
+    const result = new Map(Object.entries(responseJson));
+    console.log("Xavier experiments:", result);
+    return result;
   }
   async getOneExperiment(experimentId, defaultValue) {
     try {
@@ -207,6 +208,7 @@ function dequal(foo, bar) {
 }
 
 // node_modules/swr/dist/_internal/config-context-client-v7VOFo66.mjs
+"use client";
 var SWRGlobalState = new WeakMap;
 var noop = () => {};
 var UNDEFINED = noop();

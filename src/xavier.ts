@@ -18,7 +18,7 @@ const timeout = (ms: number, promise: Promise<any>) => {
   return promise.finally(() => clearTimeout(timeoutId));
 };
 
-const fetchDataWithTimeout = async (url: string, configs: RequestInit, ms: number) => {
+const fetchDataWithTimeout = async <T = any> (url: string, configs: RequestInit, ms: number): Promise<T> => {
   try {
     const response = await timeout(ms, fetch(url, configs));
     if (!response.ok) {
@@ -47,16 +47,18 @@ export class XavierApplication {
 
     const url = `${this.baseUrl}/assignments`;
 
-    const response = await fetchDataWithTimeout(url, {
+    const responseJson = await fetchDataWithTimeout(url, {
       headers: {
         "X-Application-Id": this.applicationId,
         Authorization: `Bearer ${this.apiToken}`,
       },
     }, this.timeoutMs);
 
-    const responseJson = await response.json();
+    const result = new Map(Object.entries(responseJson)) as ExperimentAssignments;
 
-    return new Map(Object.entries(responseJson));
+    console.log("Xavier experiments:", result);
+
+    return result;
   }
 
   public async getOneExperiment<T>(
