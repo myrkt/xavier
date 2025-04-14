@@ -13,6 +13,11 @@ interface XavierProviderProps {
 
 function localStorageProvider(key: string): Map<string, any> {
   // When initializing, we restore the data from `localStorage` into a map.
+  if (typeof window === 'undefined') {
+    console.warn("localStorageProvider is not supported in SSR. Please use a different provider.");
+    return new Map<string, any>();
+  }
+
   const map = new Map<string, any>(
     JSON.parse(localStorage.getItem(key) || "[]"),
   );

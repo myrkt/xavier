@@ -1,4 +1,3 @@
-"use client";
 var __create = Object.create;
 var __getProtoOf = Object.getPrototypeOf;
 var __defProp = Object.defineProperty;
@@ -206,6 +205,7 @@ function dequal(foo, bar) {
 }
 
 // node_modules/swr/dist/_internal/config-context-client-v7VOFo66.mjs
+"use client";
 var SWRGlobalState = new WeakMap;
 var noop = () => {};
 var UNDEFINED = noop();
@@ -1085,6 +1085,10 @@ var useSWR = withArgs(useSWRHandler);
 // src/component.tsx
 var XavierContext = createContext2(null);
 function localStorageProvider(key) {
+  if (typeof window === "undefined") {
+    console.warn("localStorageProvider is not supported in SSR. Please use a different provider.");
+    return new Map;
+  }
   const map = new Map(JSON.parse(localStorage.getItem(key) || "[]"));
   window.addEventListener("beforeunload", () => {
     const appCache = JSON.stringify(Array.from(map.entries()));
