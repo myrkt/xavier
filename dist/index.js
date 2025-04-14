@@ -1091,7 +1091,8 @@ function localStorageProvider(key) {
     console.warn("localStorageProvider is not supported in SSR. Please use a different provider.");
     return new Map;
   }
-  const map = new Map(JSON.parse(localStorage.getItem(key) || "[]"));
+  const storedData = localStorage.getItem(key);
+  const map = new Map(storedData ? JSON.parse(storedData).map(([k, v]) => [k, v]) : []);
   window.addEventListener("beforeunload", () => {
     const appCache = JSON.stringify(Array.from(map.entries()));
     localStorage.setItem(key, appCache);
@@ -1123,7 +1124,9 @@ var useXavier = () => {
 // src/useExperiments.tsx
 function useExperiments() {
   const xavier = useXavier();
-  return useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
+  const result = useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
+  console.log("useExperiments:", result);
+  return result;
 }
 
 // src/useExperiment.tsx

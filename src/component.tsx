@@ -18,8 +18,9 @@ function localStorageProvider(key: string): Map<string, any> {
     return new Map<string, any>();
   }
 
+  const storedData = localStorage.getItem(key);
   const map = new Map<string, any>(
-    JSON.parse(localStorage.getItem(key) || "[]"),
+    storedData ? JSON.parse(storedData).map(([k, v]: [string, any]) => [k, v]) : []
   );
 
   // Before unloading the app, we write back all the data into `localStorage`.

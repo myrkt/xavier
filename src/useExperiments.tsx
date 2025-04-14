@@ -6,5 +6,9 @@ import { ExperimentAssignments } from "./xavier";
 export function useExperiments(): XavierResponse<ExperimentAssignments> {
   const xavier = useXavier();
 
-  return useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
+  const result = useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
+
+  console.log("useExperiments:", result)
+
+  return result
 }
