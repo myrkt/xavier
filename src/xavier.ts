@@ -43,8 +43,6 @@ export class XavierApplication {
   ) {}
 
   public async getAllExperiments(): Promise<ExperimentAssignments> {
-    console.log("Fetching all Xavier experiments");
-
     const url = `${this.baseUrl}/assignments`;
 
     const responseJson = await fetchDataWithTimeout(url, {
@@ -54,11 +52,7 @@ export class XavierApplication {
       },
     }, this.timeoutMs);
 
-    const result = new Map(Object.entries(responseJson)) as ExperimentAssignments;
-
-    console.log("Xavier experiments:", result);
-
-    return result;
+    return new Map(Object.entries(responseJson)) as ExperimentAssignments;
   }
 
   public async getOneExperiment<T>(

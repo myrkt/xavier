@@ -125,7 +125,6 @@ class XavierApplication {
     this.timeoutMs = timeoutMs;
   }
   async getAllExperiments() {
-    console.log("Fetching all Xavier experiments");
     const url = `${this.baseUrl}/assignments`;
     const responseJson = await fetchDataWithTimeout(url, {
       headers: {
@@ -133,9 +132,7 @@ class XavierApplication {
         Authorization: `Bearer ${this.apiToken}`
       }
     }, this.timeoutMs);
-    const result = new Map(Object.entries(responseJson));
-    console.log("Xavier experiments:", result);
-    return result;
+    return new Map(Object.entries(responseJson));
   }
   async getOneExperiment(experimentId, defaultValue) {
     try {
@@ -1109,16 +1106,12 @@ var useXavier = () => {
 // src/useExperiments.tsx
 function useExperiments() {
   const xavier = useXavier();
-  const result = useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
-  console.log("useExperiments:", result);
-  return result;
+  return useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
 }
 
 // src/useExperiment.tsx
 function useExperiment(experimentId, defaultValue) {
   const allExperiments = useExperiments();
-  console.log("useExperiment allExperiments:", allExperiments);
-  if (allExperiments.data) {}
   const result = {
     ...allExperiments,
     data: allExperiments.data?.get(experimentId)?.data ?? defaultValue

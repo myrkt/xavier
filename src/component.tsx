@@ -29,8 +29,6 @@ function localStorageProvider(key: string): Map<string, any> {
     localStorage.setItem(key, appCache);
   });
 
-  console.log("LocalStorageProvider initialized with key:", key, map);
-
   // We still use the map for write & read for performance.
   return map;
 }
