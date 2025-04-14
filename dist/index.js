@@ -86,7 +86,7 @@ var require_shim = __commonJS((exports, module) => {
 });
 
 // src/component.tsx
-import { createContext as createContext2, useContext as useContext3 } from "react";
+import React5, { createContext as createContext2, useContext as useContext3 } from "react";
 
 // src/xavier.ts
 var timeout = (ms, promise) => {
@@ -1083,7 +1083,6 @@ var SWRConfig2 = OBJECT.defineProperty(SWRConfig, "defaultValue", {
 var useSWR = withArgs(useSWRHandler);
 
 // src/component.tsx
-import { jsxDEV } from "react/jsx-dev-runtime";
 var XavierContext = createContext2(null);
 function localStorageProvider(key) {
   const map = new Map(JSON.parse(localStorage.getItem(key) || "[]"));
@@ -1101,13 +1100,11 @@ var XavierProvider = ({
 }) => {
   const instance = new XavierApplication(applicationId, apiToken, baseUrl);
   const localStorageKey = `xavier-${applicationId}`;
-  return /* @__PURE__ */ jsxDEV(XavierContext.Provider, {
-    value: instance,
-    children: /* @__PURE__ */ jsxDEV(SWRConfig2, {
-      value: { provider: () => localStorageProvider(localStorageKey) },
-      children
-    }, undefined, false, undefined, this)
-  }, undefined, false, undefined, this);
+  return /* @__PURE__ */ React5.createElement(XavierContext.Provider, {
+    value: instance
+  }, /* @__PURE__ */ React5.createElement(SWRConfig2, {
+    value: { provider: () => localStorageProvider(localStorageKey) }
+  }, children));
 };
 var useXavier = () => {
   const context = useContext3(XavierContext);
