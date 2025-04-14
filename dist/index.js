@@ -125,6 +125,7 @@ class XavierApplication {
     this.timeoutMs = timeoutMs;
   }
   async getAllExperiments() {
+    console.log("Fetching all Xavier experiments");
     const url = `${this.baseUrl}/assignments`;
     const response = await fetchDataWithTimeout(url, {
       headers: {
@@ -1121,7 +1122,7 @@ var useXavier = () => {
 // src/useExperiments.tsx
 function useExperiments() {
   const xavier = useXavier();
-  return useSWR(`assignments-${xavier.applicationId}`, xavier.getAllExperiments);
+  return useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
 }
 
 // src/useExperiment.tsx

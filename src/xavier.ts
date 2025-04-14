@@ -43,6 +43,8 @@ export class XavierApplication {
   ) {}
 
   public async getAllExperiments(): Promise<ExperimentAssignments> {
+    console.log("Fetching all Xavier experiments");
+
     const url = `${this.baseUrl}/assignments`;
 
     const response = await fetchDataWithTimeout(url, {

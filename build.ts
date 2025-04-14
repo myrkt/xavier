@@ -14,6 +14,7 @@ await Promise.all([
     naming: "[dir]/[name].js",
     external: ["react", "react-dom"],
     target: 'browser',
+    banner: `"use client";`,
     plugins: [
       dts()
     ],
