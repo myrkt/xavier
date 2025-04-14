@@ -208,7 +208,6 @@ function dequal(foo, bar) {
 }
 
 // node_modules/swr/dist/_internal/config-context-client-v7VOFo66.mjs
-"use client";
 var SWRGlobalState = new WeakMap;
 var noop = () => {};
 var UNDEFINED = noop();
@@ -1141,7 +1140,7 @@ function useExperimentSummaries() {
   const allExperiments = useExperiments();
   const result = {
     ...allExperiments,
-    data: new Map(allExperiments.data?.entries().map(([_, v]) => [v.experimentId, v.treatmentId]))
+    data: new Map((allExperiments.data ?? new Map)?.entries().map(([_, v]) => [v.experimentId, v.treatmentId]))
   };
   return result;
 }
