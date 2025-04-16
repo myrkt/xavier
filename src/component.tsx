@@ -13,14 +13,18 @@ interface XavierProviderProps {
 
 function localStorageProvider(key: string): Map<string, any> {
   // When initializing, we restore the data from `localStorage` into a map.
-  if (typeof window === 'undefined') {
-    console.warn("localStorageProvider is not supported in SSR. Please use a different provider.");
+  if (typeof window === "undefined") {
+    console.warn(
+      "localStorageProvider is not supported in SSR. Please use a different provider.",
+    );
     return new Map<string, any>();
   }
 
   const storedData = localStorage.getItem(key);
   const map = new Map<string, any>(
-    storedData ? JSON.parse(storedData).map(([k, v]: [string, any]) => [k, v]) : []
+    storedData
+      ? JSON.parse(storedData).map(([k, v]: [string, any]) => [k, v])
+      : [],
   );
 
   // Before unloading the app, we write back all the data into `localStorage`.
@@ -44,9 +48,7 @@ export const XavierProvider: React.FC<XavierProviderProps> = ({
 
   return (
     <XavierContext.Provider value={instance}>
-      <SWRConfig>
-        {children}
-      </SWRConfig>
+      <SWRConfig>{children}</SWRConfig>
     </XavierContext.Provider>
   );
 };

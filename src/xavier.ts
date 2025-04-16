@@ -6,7 +6,6 @@ interface ExperimentAssignment<T> {
 
 export type ExperimentAssignments = Map<string, ExperimentAssignment<any>>;
 
-
 const timeout = (ms: number, promise: Promise<any>) => {
   const controller = new AbortController();
   const signal = controller.signal;
@@ -18,7 +17,11 @@ const timeout = (ms: number, promise: Promise<any>) => {
   return promise.finally(() => clearTimeout(timeoutId));
 };
 
-const fetchDataWithTimeout = async <T = any> (url: string, configs: RequestInit, ms: number): Promise<T> => {
+const fetchDataWithTimeout = async <T = any>(
+  url: string,
+  configs: RequestInit,
+  ms: number,
+): Promise<T> => {
   try {
     const response = await timeout(ms, fetch(url, configs));
     if (!response.ok) {
@@ -27,8 +30,8 @@ const fetchDataWithTimeout = async <T = any> (url: string, configs: RequestInit,
     const data = await response.json();
     return data;
   } catch (error: any) {
-    if (error.name === 'AbortError') {
-      throw new Error('Request timed out');
+    if (error.name === "AbortError") {
+      throw new Error("Request timed out");
     }
     throw error;
   }
@@ -39,18 +42,22 @@ export class XavierApplication {
     public readonly applicationId: string,
     public readonly apiToken: string,
     public readonly baseUrl: string = "https://assignment.fly.dev",
-    public readonly timeoutMs: number = 500,  // default timeout of 500ms
+    public readonly timeoutMs: number = 500, // default timeout of 500ms
   ) {}
 
   public async getAllExperiments(): Promise<ExperimentAssignments> {
     const url = `${this.baseUrl}/assignments`;
 
-    const responseJson = await fetchDataWithTimeout(url, {
-      headers: {
-        "X-Application-Id": this.applicationId,
-        Authorization: `Bearer ${this.apiToken}`,
+    const responseJson = await fetchDataWithTimeout(
+      url,
+      {
+        headers: {
+          "X-Application-Id": this.applicationId,
+          Authorization: `Bearer ${this.apiToken}`,
+        },
       },
-    }, this.timeoutMs);
+      this.timeoutMs,
+    );
 
     return new Map(Object.entries(responseJson)) as ExperimentAssignments;
   }
@@ -80,6 +87,8 @@ export class XavierApplication {
    */
   public async getAllExperimentsSummaries(): Promise<Map<string, string>> {
     const experiments = await this.getAllExperiments();
-    return new Map(experiments.entries().map(([_, v]) => [v.experimentId, v.treatmentId]));
+    return new Map(
+      experiments.entries().map(([_, v]) => [v.experimentId, v.treatmentId]),
+    );
   }
 }

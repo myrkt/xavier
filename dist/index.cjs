@@ -59,7 +59,7 @@ var timeout = (ms, promise) => {
   const controller = new AbortController;
   const signal = controller.signal;
   const timeoutId = setTimeout(() => {
-    controller.abort();
+    ler.abort();
   }, ms);
   return promise.finally(() => clearTimeout(timeoutId));
 };

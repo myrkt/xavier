@@ -104,7 +104,14 @@ test("If Xavier is configured, and the experiment in question is in the map, the
   class MockXavier extends XavierApplication {
     override async getAllExperiments(): Promise<ExperimentAssignments> {
       return new Map([
-        ["exp-test", { experimentId: "exp-test", treatmentId: "tr-a", data: treatmentMessage }],
+        [
+          "exp-test",
+          {
+            experimentId: "exp-test",
+            treatmentId: "tr-a",
+            data: treatmentMessage,
+          },
+        ],
       ]);
     }
   }
@@ -142,7 +149,6 @@ test("If Xavier is configured, and the experiment in question is in the map, the
   expect(resolvedMessageElement).toBeInTheDocument();
 });
 
-
 test("If Xavier is configured, and the experiment in question is in the map, the treatment summaries are correct", async () => {
   const treatmentMessage = "A test treatment!";
 
@@ -150,10 +156,20 @@ test("If Xavier is configured, and the experiment in question is in the map, the
     override async getAllExperiments(): Promise<ExperimentAssignments> {
       return new Map([
         [
-          "exp-test", { experimentId: "exp-test", treatmentId: "tr-a", data: treatmentMessage }
+          "exp-test",
+          {
+            experimentId: "exp-test",
+            treatmentId: "tr-a",
+            data: treatmentMessage,
+          },
         ],
         [
-          "exp-test2", { experimentId: "exp-test2", treatmentId: "tr-b", data: treatmentMessage }
+          "exp-test2",
+          {
+            experimentId: "exp-test2",
+            treatmentId: "tr-b",
+            data: treatmentMessage,
+          },
         ],
       ]);
     }
@@ -199,6 +215,6 @@ test("If Xavier is configured, and the experiment in question is in the map, the
     JSON.stringify({
       "exp-test": "tr-a",
       "exp-test2": "tr-b",
-    })
+    }),
   );
 });

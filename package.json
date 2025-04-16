@@ -13,6 +13,7 @@
   },
   "scripts": {
     "build": "bunup src/index.tsx --format esm,cjs --dts --banner '\"use client\";' --external react,react-dom",
+    "lint": "prettier --check .",
     "clean": "rm -rf dist"
   },
   "files": [
