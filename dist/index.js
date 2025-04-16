@@ -229,7 +229,6 @@ function dequal(foo, bar) {
 }
 
 // node_modules/swr/dist/_internal/config-context-client-v7VOFo66.mjs
-"use client";
 var SWRGlobalState = new WeakMap;
 var noop = () => {};
 var UNDEFINED = noop();
