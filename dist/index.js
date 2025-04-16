@@ -3,6 +3,7 @@ var __create = Object.create;
 var __getProtoOf = Object.getPrototypeOf;
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __toESM = (mod, isNodeMode, target) => {
   target = mod != null ? __create(__getProtoOf(mod)) : {};
@@ -14,6 +15,20 @@ var __toESM = (mod, isNodeMode, target) => {
         enumerable: true
       });
   return to;
+};
+var __moduleCache = /* @__PURE__ */ new WeakMap;
+var __toCommonJS = (from) => {
+  var entry = __moduleCache.get(from), desc;
+  if (entry)
+    return entry;
+  entry = __defProp({}, "__esModule", { value: true });
+  if (from && typeof from === "object" || typeof from === "function")
+    __getOwnPropNames(from).map((key) => !__hasOwnProp.call(entry, key) && __defProp(entry, key, {
+      get: () => from[key],
+      enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+    }));
+  __moduleCache.set(from, entry);
+  return entry;
 };
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 var __export = (target, all) => {
@@ -27,8 +42,7 @@ var __export = (target, all) => {
 };
 
 // node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.development.js
-import * as React from "react";
-var require_use_sync_external_store_shim_development = __commonJS((exports) => {
+var require_use_sync_external_store_shim_development = __commonJS((exports2) => {
   (function() {
     function is(x, y) {
       return x === y && (x !== 0 || 1 / x === 1 / y) || x !== x && y !== y;
@@ -40,22 +54,22 @@ var require_use_sync_external_store_shim_development = __commonJS((exports) => {
         var cachedValue = getSnapshot();
         objectIs(value, cachedValue) || (console.error("The result of getSnapshot should be cached to avoid an infinite loop"), didWarnUncachedGetSnapshot = true);
       }
-      cachedValue = useState2({
+      cachedValue = useState({
         inst: { value, getSnapshot }
       });
       var inst = cachedValue[0].inst, forceUpdate = cachedValue[1];
-      useLayoutEffect2(function() {
+      useLayoutEffect(function() {
         inst.value = value;
         inst.getSnapshot = getSnapshot;
         checkIfSnapshotChanged(inst) && forceUpdate({ inst });
       }, [subscribe, value, getSnapshot]);
-      useEffect2(function() {
+      useEffect(function() {
         checkIfSnapshotChanged(inst) && forceUpdate({ inst });
         return subscribe(function() {
           checkIfSnapshotChanged(inst) && forceUpdate({ inst });
         });
       }, [subscribe]);
-      useDebugValue2(value);
+      useDebugValue(value);
       return value;
     }
     function checkIfSnapshotChanged(inst) {
@@ -72,21 +86,31 @@ var require_use_sync_external_store_shim_development = __commonJS((exports) => {
       return getSnapshot();
     }
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-    var objectIs = typeof Object.is === "function" ? Object.is : is, useState2 = React.useState, useEffect2 = React.useEffect, useLayoutEffect2 = React.useLayoutEffect, useDebugValue2 = React.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim = typeof window === "undefined" || typeof window.document === "undefined" || typeof window.document.createElement === "undefined" ? useSyncExternalStore$1 : useSyncExternalStore$2;
-    exports.useSyncExternalStore = React.useSyncExternalStore !== undefined ? React.useSyncExternalStore : shim;
+    var React = require("react"), objectIs = typeof Object.is === "function" ? Object.is : is, useState = React.useState, useEffect = React.useEffect, useLayoutEffect = React.useLayoutEffect, useDebugValue = React.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim = typeof window === "undefined" || typeof window.document === "undefined" || typeof window.document.createElement === "undefined" ? useSyncExternalStore$1 : useSyncExternalStore$2;
+    exports2.useSyncExternalStore = React.useSyncExternalStore !== undefined ? React.useSyncExternalStore : shim;
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
 
 // node_modules/use-sync-external-store/shim/index.js
-var require_shim = __commonJS((exports, module) => {
+var require_shim = __commonJS((exports2, module2) => {
   if (false) {} else {
-    module.exports = require_use_sync_external_store_shim_development();
+    module2.exports = require_use_sync_external_store_shim_development();
   }
 });
 
+// src/index.tsx
+var exports_src = {};
+__export(exports_src, {
+  useXavier: () => useXavier,
+  useExperimentSummaries: () => useExperimentSummaries,
+  useExperiment: () => useExperiment,
+  default: () => src_default
+});
+module.exports = __toCommonJS(exports_src);
+
 // src/component.tsx
-import React5, { createContext as createContext2, useContext as useContext3 } from "react";
+var import_react4 = __toESM(require("react"));
 
 // src/xavier.ts
 var timeout = (ms, promise) => {
@@ -153,11 +177,11 @@ class XavierApplication {
 }
 
 // node_modules/swr/dist/index/index.mjs
-var import_shim = __toESM(require_shim(), 1);
-import React4, { useRef as useRef2, useMemo as useMemo2, useCallback, useDebugValue } from "react";
+var import_react3 = __toESM(require("react"));
+var import_shim = __toESM(require_shim());
 
 // node_modules/swr/dist/_internal/config-context-client-v7VOFo66.mjs
-import React2, { useEffect, useLayoutEffect, createContext, useContext, useMemo, useRef, createElement } from "react";
+var import_react = __toESM(require("react"));
 
 // node_modules/swr/dist/_internal/events.mjs
 var exports_events = {};
@@ -205,6 +229,7 @@ function dequal(foo, bar) {
 }
 
 // node_modules/swr/dist/_internal/config-context-client-v7VOFo66.mjs
+"use client";
 var SWRGlobalState = new WeakMap;
 var noop = () => {};
 var UNDEFINED = noop();
@@ -294,10 +319,10 @@ var defaultConfigOptions = {
   initFocus,
   initReconnect
 };
-var IS_REACT_LEGACY = !React2.useId;
+var IS_REACT_LEGACY = !import_react.default.useId;
 var IS_SERVER = !isWindowDefined || isLegacyDeno;
 var rAF = (f) => hasRequestAnimationFrame() ? window["requestAnimationFrame"](f) : setTimeout(f, 1);
-var useIsomorphicLayoutEffect = IS_SERVER ? useEffect : useLayoutEffect;
+var useIsomorphicLayoutEffect = IS_SERVER ? import_react.useEffect : import_react.useLayoutEffect;
 var navigatorConnection = typeof navigator !== "undefined" && navigator.connection;
 var slowConnection = !IS_SERVER && navigatorConnection && ([
   "slow-2g",
@@ -588,23 +613,23 @@ var mergeConfigs = (a, b) => {
   }
   return v;
 };
-var SWRConfigContext = createContext({});
+var SWRConfigContext = import_react.createContext({});
 var SWRConfig = (props) => {
   const { value } = props;
-  const parentConfig = useContext(SWRConfigContext);
+  const parentConfig = import_react.useContext(SWRConfigContext);
   const isFunctionalConfig = isFunction(value);
-  const config = useMemo(() => isFunctionalConfig ? value(parentConfig) : value, [
+  const config = import_react.useMemo(() => isFunctionalConfig ? value(parentConfig) : value, [
     isFunctionalConfig,
     parentConfig,
     value
   ]);
-  const extendedConfig = useMemo(() => isFunctionalConfig ? config : mergeConfigs(parentConfig, config), [
+  const extendedConfig = import_react.useMemo(() => isFunctionalConfig ? config : mergeConfigs(parentConfig, config), [
     isFunctionalConfig,
     parentConfig,
     config
   ]);
   const provider = config && config.provider;
-  const cacheContextRef = useRef(UNDEFINED);
+  const cacheContextRef = import_react.useRef(UNDEFINED);
   if (provider && !cacheContextRef.current) {
     cacheContextRef.current = initCache(provider(extendedConfig.cache || cache), config);
   }
@@ -619,7 +644,7 @@ var SWRConfig = (props) => {
       return cacheContext[3];
     }
   }, []);
-  return createElement(SWRConfigContext.Provider, mergeObjects(props, {
+  return import_react.createElement(SWRConfigContext.Provider, mergeObjects(props, {
     value: extendedConfig
   }));
 };
@@ -627,12 +652,12 @@ var SWRConfig = (props) => {
 var INFINITE_PREFIX = "$inf$";
 
 // node_modules/swr/dist/_internal/index.mjs
-import React3, { useContext as useContext2 } from "react";
+var import_react2 = __toESM(require("react"));
 var enableDevtools = isWindowDefined && window.__SWR_DEVTOOLS_USE__;
 var use = enableDevtools ? window.__SWR_DEVTOOLS_USE__ : [];
 var setupDevTools = () => {
   if (enableDevtools) {
-    window.__SWR_DEVTOOLS_REACT__ = React3;
+    window.__SWR_DEVTOOLS_REACT__ = import_react2.default;
   }
 };
 var normalize = (args) => {
@@ -647,7 +672,7 @@ var normalize = (args) => {
   ];
 };
 var useSWRConfig = () => {
-  return mergeObjects(defaultConfig, useContext2(SWRConfigContext));
+  return mergeObjects(defaultConfig, import_react2.useContext(SWRConfigContext));
 };
 var middleware = (useSWRNext) => (key_, fetcher_, config) => {
   const fetcher = fetcher_ && ((...args) => {
@@ -696,7 +721,7 @@ setupDevTools();
 var noop2 = () => {};
 var UNDEFINED2 = noop2();
 var table2 = new WeakMap;
-var use2 = React4.use || ((thenable) => {
+var use2 = import_react3.default.use || ((thenable) => {
   switch (thenable.status) {
     case "pending":
       throw thenable;
@@ -723,15 +748,15 @@ var useSWRHandler = (_key, fetcher, config) => {
   const { cache: cache2, compare: compare2, suspense, fallbackData, revalidateOnMount, revalidateIfStale, refreshInterval, refreshWhenHidden, refreshWhenOffline, keepPreviousData } = config;
   const [EVENT_REVALIDATORS, MUTATION, FETCH, PRELOAD] = SWRGlobalState.get(cache2);
   const [key, fnArg] = serialize(_key);
-  const initialMountedRef = useRef2(false);
-  const unmountedRef = useRef2(false);
-  const keyRef = useRef2(key);
-  const fetcherRef = useRef2(fetcher);
-  const configRef = useRef2(config);
+  const initialMountedRef = import_react3.useRef(false);
+  const unmountedRef = import_react3.useRef(false);
+  const keyRef = import_react3.useRef(key);
+  const fetcherRef = import_react3.useRef(fetcher);
+  const configRef = import_react3.useRef(config);
   const getConfig = () => configRef.current;
   const isActive = () => getConfig().isVisible() && getConfig().isOnline();
   const [getCache, setCache, subscribeCache, getInitialCache] = createCacheHelper(cache2, key);
-  const stateDependencies = useRef2({}).current;
+  const stateDependencies = import_react3.useRef({}).current;
   const fallback = isUndefined(fallbackData) ? isUndefined(config.fallback) ? UNDEFINED : config.fallback[key] : fallbackData;
   const isEqual = (prev, current) => {
     for (const _ in stateDependencies) {
@@ -753,7 +778,7 @@ var useSWRHandler = (_key, fetcher, config) => {
     }
     return true;
   };
-  const getSnapshot = useMemo2(() => {
+  const getSnapshot = import_react3.useMemo(() => {
     const shouldStartRequest = (() => {
       if (!key)
         return false;
@@ -805,7 +830,7 @@ var useSWRHandler = (_key, fetcher, config) => {
     cache2,
     key
   ]);
-  const cached = import_shim.useSyncExternalStore(useCallback((callback) => subscribeCache(key, (current, prev) => {
+  const cached = import_shim.useSyncExternalStore(import_react3.useCallback((callback) => subscribeCache(key, (current, prev) => {
     if (!isEqual(prev, current))
       callback();
   }), [
@@ -817,7 +842,7 @@ var useSWRHandler = (_key, fetcher, config) => {
   const cachedData = cached.data;
   const data = isUndefined(cachedData) ? fallback && isPromiseLike(fallback) ? use2(fallback) : fallback : cachedData;
   const error = cached.error;
-  const laggyDataRef = useRef2(data);
+  const laggyDataRef = import_react3.useRef(data);
   const returnedData = keepPreviousData ? isUndefined(cachedData) ? isUndefined(laggyDataRef.current) ? data : laggyDataRef.current : cachedData : data;
   const shouldDoInitialRevalidation = (() => {
     if (hasRevalidator && !isUndefined(error))
@@ -833,7 +858,7 @@ var useSWRHandler = (_key, fetcher, config) => {
   const defaultValidatingState = !!(key && fetcher && isInitialMount && shouldDoInitialRevalidation);
   const isValidating = isUndefined(cached.isValidating) ? defaultValidatingState : cached.isValidating;
   const isLoading = isUndefined(cached.isLoading) ? defaultValidatingState : cached.isLoading;
-  const revalidate = useCallback(async (revalidateOpts) => {
+  const revalidate = import_react3.useCallback(async (revalidateOpts) => {
     const currentFetcher = fetcherRef.current;
     if (!key || !currentFetcher || unmountedRef.current || getConfig().isPaused()) {
       return false;
@@ -945,7 +970,7 @@ var useSWRHandler = (_key, fetcher, config) => {
     key,
     cache2
   ]);
-  const boundMutate = useCallback((...args) => {
+  const boundMutate = import_react3.useCallback((...args) => {
     return internalMutate(cache2, keyRef.current, ...args);
   }, []);
   useIsomorphicLayoutEffect(() => {
@@ -1031,7 +1056,7 @@ var useSWRHandler = (_key, fetcher, config) => {
     refreshWhenOffline,
     key
   ]);
-  useDebugValue(returnedData);
+  import_react3.useDebugValue(returnedData);
   if (suspense && isUndefined(data) && key) {
     if (!IS_REACT_LEGACY && IS_SERVER) {
       throw new Error("Fallback data is required when using Suspense in SSR.");
@@ -1082,7 +1107,7 @@ var SWRConfig2 = OBJECT.defineProperty(SWRConfig, "defaultValue", {
 var useSWR = withArgs(useSWRHandler);
 
 // src/component.tsx
-var XavierContext = createContext2(null);
+var XavierContext = import_react4.createContext(null);
 var XavierProvider = ({
   applicationId,
   apiToken,
@@ -1091,12 +1116,12 @@ var XavierProvider = ({
 }) => {
   const instance = new XavierApplication(applicationId, apiToken, baseUrl);
   const localStorageKey = `xavier-${applicationId}`;
-  return /* @__PURE__ */ React5.createElement(XavierContext.Provider, {
+  return /* @__PURE__ */ import_react4.default.createElement(XavierContext.Provider, {
     value: instance
-  }, /* @__PURE__ */ React5.createElement(SWRConfig2, null, children));
+  }, /* @__PURE__ */ import_react4.default.createElement(SWRConfig2, null, children));
 };
 var useXavier = () => {
-  const context = useContext3(XavierContext);
+  const context = import_react4.useContext(XavierContext);
   if (!context) {
     throw new Error("Xavier is not configured. Please add <Xavier apiToken='...'> with a valid token to your component tree.");
   }
@@ -1130,9 +1155,3 @@ function useExperimentSummaries() {
 
 // src/index.tsx
 var src_default = XavierProvider;
-export {
-  useXavier,
-  useExperimentSummaries,
-  useExperiment,
-  src_default as default
-};

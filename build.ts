@@ -10,7 +10,7 @@ const defaultBuildConfig: BuildConfig = {
 await Promise.all([
   Bun.build({
     ...defaultBuildConfig,
-    format: "esm",
+    format: "cjs",
     naming: "[dir]/[name].js",
     external: ["react", "react-dom"],
     target: 'browser',

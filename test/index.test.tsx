@@ -29,17 +29,16 @@ test("If Xavier is configured, but the experiment fails to be evaluated, the def
 
   const message = "Just a test!";
 
-  render(
-    <Xavier apiToken="" applicationId="">
-      <MyComponent defaultMessage={message} />
-    </Xavier>,
-  );
-
-  // Check if the loading value is used
-  const loadingElement = screen.getByText("Loading");
-  expect(loadingElement).toBeInTheDocument();
-
   await act(async () => {
+    const result = render(
+      <Xavier apiToken="" applicationId="" baseUrl="">
+        <MyComponent defaultMessage={message} />
+      </Xavier>,
+    );
+
+    expect(result.getByText("Loading")).toBeInTheDocument();
+
+    // Check if the loading value is used
     await sleep(DEFAULT_TIMEOUT_MS);
   });
 
