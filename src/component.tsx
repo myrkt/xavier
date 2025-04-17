@@ -53,7 +53,7 @@ export const XavierProvider: React.FC<XavierProviderProps> = ({
   );
 };
 
-export const useXavier = () => {
+export const useXavier = (): XavierApplication => {
   const context = useContext(XavierContext);
   if (!context) {
     throw new Error(
