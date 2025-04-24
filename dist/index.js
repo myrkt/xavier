@@ -38,19 +38,21 @@ class XavierApplication {
     this.baseUrl = baseUrl;
     this.timeoutMs = timeoutMs;
   }
-  async getAllExperiments() {
+  async getAllExperiments(options) {
     const url = `${this.baseUrl}/assignments`;
-    const responseJson = await fetchDataWithTimeout(url, {
-      headers: {
-        "X-Application-Id": this.applicationId,
-        Authorization: `Bearer ${this.apiToken}`
-      }
-    }, this.timeoutMs);
+    const headers = {
+      "X-Application-Id": this.applicationId,
+      Authorization: `Bearer ${this.apiToken}`
+    };
+    if (options?.ipAddress) {
+      headers["X-Forward-Client-IP"] = options.ipAddress;
+    }
+    const responseJson = await fetchDataWithTimeout(url, { headers }, options?.timeoutMs ?? this.timeoutMs);
     return new Map(Object.entries(responseJson));
   }
-  async getOneExperiment(experimentId, defaultValue) {
+  async getOneExperiment(experimentId, defaultValue, options) {
     try {
-      const allExperiments = await this.getAllExperiments();
+      const allExperiments = await this.getAllExperiments(options);
       const experiment = allExperiments.get(experimentId);
       if (experiment) {
         return experiment.data;
@@ -60,8 +62,8 @@ class XavierApplication {
     }
     return defaultValue;
   }
-  async getAllExperimentsSummaries() {
-    const experiments = await this.getAllExperiments();
+  async getAllExperimentsSummaries(options) {
+    const experiments = await this.getAllExperiments(options);
     return new Map(experiments.entries().map(([_, v]) => [v.experimentId, v.treatmentId]));
   }
 }
@@ -121,5 +123,6 @@ export {
   useXavier,
   useExperimentSummaries,
   useExperiment,
-  src_default as default
+  src_default as default,
+  XavierApplication
 };
