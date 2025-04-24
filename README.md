@@ -143,7 +143,6 @@ treatment group.
 
 In this experiment, we are retrieving the SKU that will receive a discount.
 
-
 ## Development
 
 ```bash

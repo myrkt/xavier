@@ -4,12 +4,10 @@ interface ExperimentAssignment<T> {
   data: T;
 }
 
-
 interface XavierRequestConfig {
   timeoutMs?: number;
   ipAddress?: string;
 }
-
 
 export type ExperimentAssignments = Map<string, ExperimentAssignment<any>>;
 
@@ -71,16 +69,18 @@ export class XavierApplication {
    * @param options Specific configuration for this request.
    * @returns A map of experimentId to ExperimentAssignment for each live experiment.
    */
-  public async getAllExperiments(options?: XavierRequestConfig): Promise<ExperimentAssignments> {
+  public async getAllExperiments(
+    options?: XavierRequestConfig,
+  ): Promise<ExperimentAssignments> {
     const url = `${this.baseUrl}/assignments`;
 
     const headers: HeadersInit = {
       "X-Application-Id": this.applicationId,
       Authorization: `Bearer ${this.apiToken}`,
-    }
+    };
 
     if (options?.ipAddress) {
-      headers["X-Forward-Client-IP"] = options.ipAddress
+      headers["X-Forward-Client-IP"] = options.ipAddress;
     }
 
     const responseJson = await fetchDataWithTimeout(
@@ -102,7 +102,7 @@ export class XavierApplication {
   public async getOneExperiment<T>(
     experimentId: string,
     defaultValue: T,
-    options?: XavierRequestConfig
+    options?: XavierRequestConfig,
   ): Promise<T> {
     try {
       const allExperiments = await this.getAllExperiments(options);
@@ -123,7 +123,9 @@ export class XavierApplication {
    * for annotating orders placed by users.
    * @returns A map of experimentId to treatmentId
    */
-  public async getAllExperimentsSummaries(options?: XavierRequestConfig): Promise<Map<string, string>> {
+  public async getAllExperimentsSummaries(
+    options?: XavierRequestConfig,
+  ): Promise<Map<string, string>> {
     const experiments = await this.getAllExperiments(options);
     return new Map(
       experiments.entries().map(([_, v]) => [v.experimentId, v.treatmentId]),
