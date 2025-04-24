@@ -1,10 +1,10 @@
-interface ExperimentAssignment<T> {
+export interface ExperimentAssignment<T> {
   experimentId: string;
   treatmentId: string;
   data: T;
 }
 
-interface XavierRequestConfig {
+export interface XavierRequestConfig {
   timeoutMs?: number;
   ipAddress?: string;
 }
