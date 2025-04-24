@@ -71,17 +71,35 @@ class XavierApplication {
 // src/component.tsx
 import { SWRConfig } from "swr";
 var XavierContext = createContext(null);
+var NoOpCache = {
+  get: () => {
+    return;
+  },
+  set: () => {
+    return;
+  },
+  delete: () => {
+    return;
+  },
+  clear: () => {
+    return;
+  },
+  keys: () => new Map().keys()
+};
 var XavierProvider = ({
   applicationId,
   apiToken,
   baseUrl,
-  children
+  children,
+  disableCache
 }) => {
   const instance = new XavierApplication(applicationId, apiToken, baseUrl);
   const localStorageKey = `xavier-${applicationId}`;
   return /* @__PURE__ */ React.createElement(XavierContext.Provider, {
     value: instance
-  }, /* @__PURE__ */ React.createElement(SWRConfig, null, children));
+  }, disableCache ? /* @__PURE__ */ React.createElement(SWRConfig, {
+    value: { provider: () => NoOpCache, dedupingInterval: 0 }
+  }, children) : /* @__PURE__ */ React.createElement(SWRConfig, null, children));
 };
 var useXavier = () => {
   const context = useContext(XavierContext);
@@ -95,15 +113,25 @@ var useXavier = () => {
 import useSWR from "swr";
 function useExperiments() {
   const xavier = useXavier();
-  return useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
+  return useSWR(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments(), {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false
+  });
 }
 
 // src/useExperiment.tsx
 function useExperiment(experimentId, defaultValue) {
   const allExperiments = useExperiments();
+  console.log("useExperiment state:", {
+    data: allExperiments.data,
+    error: allExperiments.error,
+    isLoading: allExperiments.isLoading
+  });
   const result = {
     ...allExperiments,
-    data: allExperiments.data?.get(experimentId)?.data ?? defaultValue
+    data: allExperiments.data?.get(experimentId)?.data ?? defaultValue,
+    error: allExperiments.error,
+    isLoading: allExperiments.isLoading
   };
   return result;
 }

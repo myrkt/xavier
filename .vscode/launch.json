@@ -57,7 +57,7 @@
       "program": "${file}",
 
       // The arguments to pass to the program, if any.
-      "args": ["test"],
+      "args": ["test", "-t", "If Xavier is configured, but the experiment fails to be evaluated, the default value is used instead"],
 
       // The working directory of the program.
       "cwd": "${workspaceFolder}",

@@ -8,5 +8,9 @@ export function useExperiments(): XavierResponse<ExperimentAssignments> {
 
   return useSWR(`assignments-${xavier.applicationId}`, (key) =>
     xavier.getAllExperiments(),
+  {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false
+  }
   );
 }

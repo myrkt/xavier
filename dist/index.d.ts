@@ -60,6 +60,7 @@ interface XavierProviderProps {
 	apiToken: string;
 	baseUrl?: string;
 	children: ReactNode;
+	disableCache?: boolean;
 }
 declare const XavierProvider: React.FC<XavierProviderProps>;
 declare const useXavier: () => XavierApplication;

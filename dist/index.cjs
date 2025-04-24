@@ -124,17 +124,35 @@ class XavierApplication {
 // src/component.tsx
 var import_swr = require("swr");
 var XavierContext = import_react.createContext(null);
+var NoOpCache = {
+  get: () => {
+    return;
+  },
+  set: () => {
+    return;
+  },
+  delete: () => {
+    return;
+  },
+  clear: () => {
+    return;
+  },
+  keys: () => new Map().keys()
+};
 var XavierProvider = ({
   applicationId,
   apiToken,
   baseUrl,
-  children
+  children,
+  disableCache
 }) => {
   const instance = new XavierApplication(applicationId, apiToken, baseUrl);
   const localStorageKey = `xavier-${applicationId}`;
   return /* @__PURE__ */ import_react.default.createElement(XavierContext.Provider, {
     value: instance
-  }, /* @__PURE__ */ import_react.default.createElement(import_swr.SWRConfig, null, children));
+  }, disableCache ? /* @__PURE__ */ import_react.default.createElement(import_swr.SWRConfig, {
+    value: { provider: () => NoOpCache, dedupingInterval: 0 }
+  }, children) : /* @__PURE__ */ import_react.default.createElement(import_swr.SWRConfig, null, children));
 };
 var useXavier = () => {
   const context = import_react.useContext(XavierContext);
@@ -148,15 +166,25 @@ var useXavier = () => {
 var import_swr2 = __toESM(require("swr"));
 function useExperiments() {
   const xavier = useXavier();
-  return import_swr2.default(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments());
+  return import_swr2.default(`assignments-${xavier.applicationId}`, (key) => xavier.getAllExperiments(), {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false
+  });
 }
 
 // src/useExperiment.tsx
 function useExperiment(experimentId, defaultValue) {
   const allExperiments = useExperiments();
+  console.log("useExperiment state:", {
+    data: allExperiments.data,
+    error: allExperiments.error,
+    isLoading: allExperiments.isLoading
+  });
   const result = {
     ...allExperiments,
-    data: allExperiments.data?.get(experimentId)?.data ?? defaultValue
+    data: allExperiments.data?.get(experimentId)?.data ?? defaultValue,
+    error: allExperiments.error,
+    isLoading: allExperiments.isLoading
   };
   return result;
 }

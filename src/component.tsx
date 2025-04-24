@@ -9,6 +9,7 @@ interface XavierProviderProps {
   apiToken: string;
   baseUrl?: string;
   children: ReactNode;
+  disableCache?: boolean;
 }
 
 function localStorageProvider(key: string): Map<string, any> {
@@ -37,18 +38,31 @@ function localStorageProvider(key: string): Map<string, any> {
   return map;
 }
 
+const NoOpCache = {
+  get: () => undefined,
+  set: () => undefined,
+  delete: () => undefined,
+  clear: () => undefined,
+  keys: () => new Map<string, string>().keys()
+};
+
 export const XavierProvider: React.FC<XavierProviderProps> = ({
   applicationId,
   apiToken,
   baseUrl,
   children,
+  disableCache,
 }) => {
   const instance = new XavierApplication(applicationId, apiToken, baseUrl);
   const localStorageKey = `xavier-${applicationId}`;
 
   return (
     <XavierContext.Provider value={instance}>
-      <SWRConfig>{children}</SWRConfig>
+      {disableCache ? (
+        <SWRConfig value={{ provider: () => NoOpCache, dedupingInterval: 0 }}>{children}</SWRConfig>
+      ) : (
+        <SWRConfig>{children}</SWRConfig>
+      )}
     </XavierContext.Provider>
   );
 };

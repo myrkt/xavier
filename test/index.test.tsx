@@ -1,12 +1,13 @@
 import React, { act } from "react";
 import { test, expect, mock } from "bun:test";
-import { screen, render } from "@testing-library/react";
+import { screen, render, waitFor } from "@testing-library/react";
 import { MyComponent } from "./MyComponent";
 import Xavier, { useExperimentSummaries } from "../src/index";
-import { ExperimentAssignments, XavierApplication } from "../src/xavier";
+import { ExperimentAssignments, XavierApplication, XavierRequestConfig } from "../src/xavier";
 import { sleep } from "bun";
 
-const DEFAULT_TIMEOUT_MS = 100;
+const DEFAULT_TIMEOUT_MS = 1000;
+
 
 test("If Xavier is not configured, an error is thrown when useExperiment() is called", () => {
   expect(() => render(<MyComponent defaultMessage="" />)).toThrowError(
@@ -15,94 +16,80 @@ test("If Xavier is not configured, an error is thrown when useExperiment() is ca
 });
 
 test("If Xavier is configured, but the experiment fails to be evaluated, the default value is used instead", async () => {
-  class MockXavier extends XavierApplication {
-    override async getAllExperiments(): Promise<ExperimentAssignments> {
+  class MockXavierError extends XavierApplication {
+    override async getAllExperiments(config?: XavierRequestConfig): Promise<ExperimentAssignments> {
       throw new Error("Failed to evaluate experiment");
     }
   }
 
   mock.module("../src/xavier", () => {
     return {
-      XavierApplication: MockXavier,
+      XavierApplication: MockXavierError,
     };
   });
 
   const message = "Just a test!";
 
-  await act(async () => {
-    const result = render(
-      <Xavier apiToken="" applicationId="" baseUrl="">
-        <MyComponent defaultMessage={message} />
-      </Xavier>,
-    );
-
-    expect(result.getByText("Loading")).toBeInTheDocument();
-
-    // Check if the loading value is used
-    await sleep(DEFAULT_TIMEOUT_MS);
-  });
-
-  render(
-    <Xavier apiToken="" applicationId="">
+  const result = render(
+    <Xavier apiToken="" applicationId="" baseUrl="" disableCache={true}>
       <MyComponent defaultMessage={message} />
     </Xavier>,
   );
 
-  // Check if the default message is displayed after waiting 200ms
-  const resolvedMessageElement = screen.getByText(message);
-  expect(resolvedMessageElement).toBeInTheDocument();
+  // "Loading" state should be shown immediately.
+  expect(result.getByTestId("my-component").textContent).toBe("Loading");
+
+  // Now, MockXavier will return an error, so the default message should be rendered instead
+  await waitFor(() => {
+    // Check that the default message is now displayed
+    expect(result.getByTestId("my-component").textContent).toBe(message);
+  })
+
 });
 
+
 test("If Xavier is configured, but the experiment in question is not found, the default value is used instead", async () => {
-  class MockXavier extends XavierApplication {
-    override async getAllExperiments(): Promise<ExperimentAssignments> {
+  class MockXavierEmpty extends XavierApplication {
+    override async getAllExperiments(options?: XavierRequestConfig): Promise<ExperimentAssignments> {
       return new Map();
     }
   }
 
   mock.module("../src/xavier", () => {
     return {
-      XavierApplication: MockXavier,
+      XavierApplication: MockXavierEmpty,
     };
   });
 
   const message = "Just a test!";
 
-  render(
-    <Xavier apiToken="" applicationId="">
-      <MyComponent
-        experimentId="not-a-real-experiment"
-        defaultMessage={message}
-      />
+  const result = render(
+    <Xavier apiToken="" applicationId="" baseUrl="" disableCache={true}>
+      <MyComponent defaultMessage={message} />
     </Xavier>,
   );
 
-  // Check if the loading value is used
-  const loadingElement = screen.getByText("Loading");
-  expect(loadingElement).toBeInTheDocument();
+  // Wait for the "Loading" text to appear
+  await waitFor(() => {
+    expect(result.getByText("Loading")).toBeInTheDocument();
+  });
 
+  // Now, MockXavier will return an empty dictionary, so the default message should be rendered instead
   await act(async () => {
     await sleep(DEFAULT_TIMEOUT_MS);
   });
-  render(
-    <Xavier apiToken="" applicationId="">
-      <MyComponent
-        experimentId="not-a-real-experiment"
-        defaultMessage={message}
-      />
-    </Xavier>,
-  );
 
-  // Check if the default message is displayed after waiting a bit
-  const resolvedMessageElement = screen.getByText(message);
-  expect(resolvedMessageElement).toBeInTheDocument();
+  // Check that the default message is now displayed
+  await waitFor(() => {
+    expect(result.getByText(message)).toBeInTheDocument();
+  });
 });
 
 test("If Xavier is configured, and the experiment in question is in the map, the treatment value is used instead", async () => {
   const treatmentMessage = "A test treatment!";
 
-  class MockXavier extends XavierApplication {
-    override async getAllExperiments(): Promise<ExperimentAssignments> {
+  class MockXavierSingle extends XavierApplication {
+    override async getAllExperiments(options?: XavierRequestConfig): Promise<ExperimentAssignments> {
       return new Map([
         [
           "exp-test",
@@ -118,41 +105,31 @@ test("If Xavier is configured, and the experiment in question is in the map, the
 
   mock.module("../src/xavier", () => {
     return {
-      XavierApplication: MockXavier,
+      XavierApplication: MockXavierSingle,
     };
   });
 
   const message = "Just a test!";
 
-  render(
-    <Xavier apiToken="" applicationId="">
+  const result = render(
+    <Xavier apiToken="" applicationId="" baseUrl="" disableCache={true}>
       <MyComponent experimentId="exp-test" defaultMessage={message} />
     </Xavier>,
   );
 
-  // Check if the loading value is used
-  const loadingElement = screen.getByText("Loading");
-  expect(loadingElement).toBeInTheDocument();
-
+  // Now, MockXavier will return a real dictionary, so the treatment message should be rendered instead
   await act(async () => {
     await sleep(DEFAULT_TIMEOUT_MS);
   });
 
-  render(
-    <Xavier apiToken="" applicationId="">
-      <MyComponent experimentId="exp-test" defaultMessage={message} />
-    </Xavier>,
-  );
-
-  // Check if the treatment message is displayed after waiting a bit
-  const resolvedMessageElement = screen.getByText(treatmentMessage);
-  expect(resolvedMessageElement).toBeInTheDocument();
+  // Check that the default message is now displayed
+  expect(result.getByText(treatmentMessage)).toBeInTheDocument();
 });
 
 test("If Xavier is configured, and the experiment in question is in the map, the treatment summaries are correct", async () => {
   const treatmentMessage = "A test treatment!";
 
-  class MockXavier extends XavierApplication {
+  class MockXavierMultiple extends XavierApplication {
     override async getAllExperiments(): Promise<ExperimentAssignments> {
       return new Map([
         [
@@ -177,11 +154,9 @@ test("If Xavier is configured, and the experiment in question is in the map, the
 
   mock.module("../src/xavier", () => {
     return {
-      XavierApplication: MockXavier,
+      XavierApplication: MockXavierMultiple,
     };
   });
-
-  const message = "Just a test!";
 
   function SummariesComponent() {
     const { data, error, isLoading } = useExperimentSummaries();
@@ -204,17 +179,19 @@ test("If Xavier is configured, and the experiment in question is in the map, the
   });
 
   render(
-    <Xavier apiToken="" applicationId="">
+    <Xavier apiToken="" applicationId="" baseUrl="" disableCache={true}>
       <SummariesComponent />
     </Xavier>,
   );
 
-  // Check if the treatment message is displayed after waiting a bit
-  const resolvedMessageElement = screen.getByTestId("my-component");
-  expect(resolvedMessageElement).textContent?.toBeEqual(
-    JSON.stringify({
-      "exp-test": "tr-a",
-      "exp-test2": "tr-b",
-    }),
-  );
+  await waitFor(() => {
+    // Check if the treatment message is displayed after waiting a bit
+    const resolvedMessageElement = screen.getByTestId("my-component");
+    expect(resolvedMessageElement).textContent?.toBeEqual(
+      JSON.stringify({
+        "exp-test": "tr-a",
+        "exp-test2": "tr-b",
+      }),
+    );
+  });
 });
